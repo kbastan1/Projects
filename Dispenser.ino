@@ -6,22 +6,21 @@
   - Buzzer provides feedback beeps.
   
   NOTE:
-  - Ensure your stepper is *not* driven directly from the Arduino pins: use a proper driver module.
   - this project was ran using a4988 stepers as noise is not a concern.
   - Tune step timing (delayMicroseconds) to match your driver, voltage, and motor torque needs.
-  - stepsPerRevolution below is set to 100 (not typical 200); adjust to your auger pitch and microstepping.
+  - stepsPerRevolution below is set to 100 (not typical 200); adjust this depending on auger pitch and microstepping.
 */
 
 // ---------------- Pin Assignments ----------------
 const int stepPin   = 2;   // STEP input on the stepper driver
 const int dirPin    = 3;   // DIR input on the stepper driver
-const int trigPin   = 9;   // Ultrasonic trigger
+const int trigPin   = 9;   // ultrasonic trigger
 const int echoPin   = 10;  // Ultrasonic echo
 const int buttonPin = 5;   // Manual dispense button (HIGH when pressed if wired with pull-down)
 const int buzzerPin = 11;  // Piezo buzzer pin (button is for debugging reasons, and a fallback if the sensor ever has a hardware failure)
 
 // ---------------- State / Config -----------------
-int  buttonState    = 0;    // Raw read from buttonPin each loop
+int  buttonState    = 0;    // raw read from buttonPin each loop
 bool buttonIsActive = false;
 
 // Steps per auger "revolution" (logical unit for one dispense action).
@@ -38,11 +37,11 @@ int currThreshold   = 0;     // Counter of consecutive close readings
 void setup() {
   Serial.begin(9600);
 
-  // Stepper driver control pins
+  // Stepper driver control
   pinMode(stepPin, OUTPUT);
   pinMode(dirPin,  OUTPUT);
 
-  // Ultrasonic sensor pins
+  // Ultrasonic sensor 
   pinMode(trigPin, OUTPUT);
   pinMode(echoPin, INPUT);
 
@@ -52,19 +51,19 @@ void setup() {
   // For now we assume external pull-down to GND and 5V when pressed:
   pinMode(buttonPin, INPUT);
 
-  // Buzzer pin
+  // buzzer
   pinMode(buzzerPin, OUTPUT);
 }
 
 // Rotate auger forward to dispense candy.
 // Increase the loop limit or adjust delays to change amount/speed.
 void rotateStepper() {
-  digitalWrite(dirPin, LOW); // LOW/HIGH depends on wiring; choose direction that dispenses
+  digitalWrite(dirPin, LOW); 
   for (int i = 0; i < stepsPerRevolution * 2; i++) { // "*2" = longer dispense
     digitalWrite(stepPin, HIGH);
     delayMicroseconds(5000); // Step pulse width + speed control (bigger = slower)
     digitalWrite(stepPin, LOW);
-    delayMicroseconds(5000); // Step interval (controls RPM)
+    delayMicroseconds(5000); // Step interval (RPM control)
   }
 }
 
